@@ -67,10 +67,13 @@ object Notificador {
         val canalId = if (urgente) CANAL_URGENTE else CANAL
         val prioridad = if (urgente) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT
 
+        val textoLargo = "${aviso.texto}\n\nOrigen: ${aviso.origen.texto} · Hora: ${aviso.hora}\nToca para abrir AvisosCampus y revisar el historial."
+
         val notificacion = NotificationCompat.Builder(context, canalId)
             .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(aviso.titulo)
             .setContentText(aviso.texto)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(textoLargo))
             .setPriority(prioridad)
             .setContentIntent(pendiente)
             .setAutoCancel(true)

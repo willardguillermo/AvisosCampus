@@ -13,6 +13,7 @@ Mejoras elegidas:
 | Prompt que escribí | Qué respondió Gemini | Qué cambié o descarté | Por qué |
 |---|---|---|---|
 | «Agrega un segundo canal "Urgentes" con IMPORTANCE_HIGH; el ViewModel decide que el recordatorio es urgente y emite un `EventoAviso(aviso, urgente)`; la pantalla pasa `urgente` al Notificador. Prohibido Context en el ViewModel.» | Creó `EventoAviso` en `Modelos.kt`, el canal `CANAL_URGENTE` en `crearCanal`, el parámetro `urgente` en `mostrar()` (canal y prioridad según el valor), cambió `eventos` a `SharedFlow<EventoAviso>` y actualizó el `collect` de la pantalla. | No cambié nada. Revisé el diff: el ViewModel sigue sin `Context`, `NotificationManager` ni `BroadcastReceiver`, y el Repository no se tocó. | Quien decide la **urgencia** es el ViewModel (regla de negocio) y quien elige el **canal** es el Notificador (detalle de Android). Así cada capa hace solo lo suyo. |
+| «Agrega `BigTextStyle` cambiando solo `Notificador.kt`: arma un texto largo con texto, origen y hora del aviso; mantén `setContentText` corto y todo lo demás igual.» | Agregó `val textoLargo` dentro de `mostrar()` y `.setStyle(NotificationCompat.BigTextStyle().bigText(textoLargo))` al Builder, conservando canales, prioridad, `PendingIntent` y `notify(aviso.id)`. | No cambié nada. Confirmé en el diff que solo cambió `Notificador.kt`. | Los textos de la guía son cortos y al expandir no se notaba nada; armar el texto largo con datos del propio `Aviso` muestra la mejora **sin cambiar los datos ficticios** de la guía ni otras capas. |
 
 ---
 
