@@ -36,12 +36,14 @@ import androidx.compose.ui.unit.dp
 import com.willard.avisoscampus.model.PermisoUi
 import com.willard.avisoscampus.notificacion.Notificador
 import com.willard.avisoscampus.viewmodel.AvisosViewModel
+import androidx.compose.material3.OutlinedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
     val contexto = LocalContext.current
     val permiso by vm.permiso.collectAsState()
+    val faltan by vm.faltan.collectAsState()
 
     val lanzador = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -113,7 +115,31 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 }
             }
             Tarjeta("Recordatorio") {
-                // TODO Paso 5: "Recordar en 10 s", "Cancelar" y "Faltan N s"
+                val activo = faltan != null
+                Row(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { vm.recordarEn(10) },
+                        enabled = !activo
+                    ) {
+                        Text("Recordar en 10 s")
+                    }
+                    OutlinedButton(
+                        onClick = { vm.cancelarRecordatorio() },
+                        enabled = activo
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+                faltan?.let { segundos ->
+                    Text(
+                        text = "Faltan $segundos s",
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
             Tarjeta("Receptor de anuncios") {
                 // TODO Paso 6: Switch "Escuchar el modo avión"
