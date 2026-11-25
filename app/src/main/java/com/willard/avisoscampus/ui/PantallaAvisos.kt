@@ -105,7 +105,12 @@ fun PantallaAvisos(vm: AvisosViewModel) {
             }
             // TODO Paso 8: mensaje de error y botón "Abrir ajustes"
             Tarjeta("Avisos") {
-                // TODO Paso 3: botón "Mostrar aviso"
+                Button(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = { vm.avisarAhora() }
+                ) {
+                    Text("Mostrar aviso")
+                }
             }
             Tarjeta("Recordatorio") {
                 // TODO Paso 5: "Recordar en 10 s", "Cancelar" y "Faltan N s"
