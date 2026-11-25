@@ -18,6 +18,7 @@ import com.willard.avisoscampus.model.Aviso
 
 object Notificador {
     const val CANAL = "avisos"
+    const val CANAL_URGENTE = "urgentes"
 
     fun crearCanal(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -28,8 +29,16 @@ object Notificador {
             ).apply {
                 description = "Notificaciones de la app"
             }
+            val canalUrgente = NotificationChannel(
+                CANAL_URGENTE,
+                "Urgentes",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Avisos importantes que aparecen en pantalla"
+            }
             val manager = context.getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(canal)
+            manager.createNotificationChannel(canalUrgente)
         }
     }
 
@@ -42,7 +51,7 @@ object Notificador {
     }
 
     @SuppressLint("MissingPermission")
-    fun mostrar(context: Context, aviso: Aviso): Boolean {
+    fun mostrar(context: Context, aviso: Aviso, urgente: Boolean = false): Boolean {
         if (!tienePermiso(context)) return false
 
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -55,11 +64,14 @@ object Notificador {
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notificacion = NotificationCompat.Builder(context, CANAL)
+        val canalId = if (urgente) CANAL_URGENTE else CANAL
+        val prioridad = if (urgente) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT
+
+        val notificacion = NotificationCompat.Builder(context, canalId)
             .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(aviso.titulo)
             .setContentText(aviso.texto)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(prioridad)
             .setContentIntent(pendiente)
             .setAutoCancel(true)
             .build()
