@@ -66,6 +66,7 @@ private fun EtiquetaOrigen(origen: Origen) {
         Origen.BOTON -> Color(0xFF1565C0)
         Origen.RECORDATORIO -> Color(0xFFB26A00)
         Origen.MODO_AVION -> Color(0xFF7B1FA2)
+        Origen.CARGADOR -> Color(0xFF2E7D32)
     }
     Surface(
         color = color.copy(alpha = 0.15f),
